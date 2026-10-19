@@ -1,0 +1,60 @@
+[project]
+name = "tk-mcp"
+version = "0.1.0"
+description = "MCP server for Polish Constitutional Tribunal (Trybunal Konstytucyjny) rulings from trybunal.gov.pl"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "MateMatic", email = "kontakt@matematic.co" }
+]
+keywords = ["mcp", "trybunal-konstytucyjny", "orzeczenia", "wyroki", "polish-law"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business",
+]
+dependencies = [
+    "fastmcp>=3.4,<4",
+    "httpx>=0.27.0,<1",
+    "pydantic>=2.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+tk-mcp = "tk_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/matematicsolutions/tk-mcp"
+Repository = "https://github.com/matematicsolutions/tk-mcp"
+Issues = "https://github.com/matematicsolutions/tk-mcp/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tk_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+# `pytest` ma byc offline: smoke (live trybunal.gov.pl) uruchamia sie jawnie:
+#     pytest -m smoke -v
+addopts = "-m 'not smoke'"
+markers = [
+    "smoke: online smoke tests (hit live trybunal.gov.pl)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
