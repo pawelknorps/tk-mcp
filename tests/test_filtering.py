@@ -70,10 +70,10 @@ def test_page_must_be_at_least_one():
     assert exc.value.code == "invalid_arg"
 
 
-def test_query_and_path_are_required():
-    with pytest.raises(TkError) as exc:
-        _require_query("   ")
-    assert exc.value.code == "missing_arg"
+def test_empty_query_falls_back_to_match_all_and_path_is_required():
+    # Pusta fraza = przegladanie po samej fasce -> Solr match-all `*:*`.
+    assert _require_query("   ") == "*:*"
+    assert _require_query("K 15/24") == "K 15/24"
 
     with pytest.raises(TkError) as exc:
         _require_path("")

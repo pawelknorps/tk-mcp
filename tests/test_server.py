@@ -166,11 +166,20 @@ def test_get_judgment_text_scopes_to_content(fixture_html, monkeypatch, tmp_path
 # ---------- walidacja i kody bledow ----------
 
 
-def test_missing_query_is_a_structured_error():
-    with pytest.raises(TkError) as exc:
-        _run(search_judgments, query="")
-    assert exc.value.code == "missing_arg"
-    assert str(exc.value).startswith("[missing_arg]")
+def test_empty_query_browses_by_filter_via_match_all(monkeypatch):
+    seen: dict = {}
+
+    async def fake_search(self, query, page=1, sort=None, filter=None):
+        seen["params"] = (query, page, sort, filter)
+        return "<html></html>", "https://trybunal.gov.pl/wyszukiwarka?type=7383"
+
+    monkeypatch.setattr(TkClient, "search", fake_search)
+
+    result = _run(search_judgments, query="", filter="category:Wyrok")
+
+    assert seen["params"] == ("*:*", 1, None, "category:Wyrok")
+    assert result["query"] == "*:*"
+    assert result["count"] == 0  # brak naglowka = brak trafien, nie blad
 
 
 def test_page_zero_is_a_structured_error():

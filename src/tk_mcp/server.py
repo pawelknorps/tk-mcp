@@ -115,10 +115,10 @@ mcp = FastMCP(name="tk-mcp", instructions=INSTRUCTIONS)
 
 
 def _require_query(query: str) -> str:
+    # Pusty `query` = przegladanie po samej fasce (np. `category:Wyrok`).
+    # Solr wymaga niepustego `q`, wiec podstawiamy match-all `*:*`.
     q = str(query).strip()
-    if not q:
-        raise TkError("missing_arg", "Parametr `query` jest wymagany (np 'K 15/24' albo 'emerytalny').")
-    return q
+    return q or "*:*"
 
 
 def _require_path(path: str) -> str:
@@ -179,7 +179,8 @@ async def search_judgments(
     licznika albo licznik 0 to `count=0` z pustymi `items` - nie blad.
 
     Args:
-        query: fraza pelnotekstowa (np "K 15/24", "emerytalny")
+        query: fraza pelnotekstowa (np "K 15/24", "emerytalny"). Pusta = przegladanie
+            po samej `filter` (np. wszystkie wyroki), serwerowo `q=*:*`.
         page: numer strony, 1-based (default 1)
         sort: "publicationDate+desc" albo "publicationDate+asc"
         filter: faseta, np "signature:K", "category:Wyrok", "modificationDate:lastYear"
