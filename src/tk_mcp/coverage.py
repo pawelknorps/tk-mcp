@@ -103,8 +103,8 @@ _GAPS: list[dict] = [
     {
         "id": "TK-005",
         "family": "Constitutional Tribunal decisions (postanowienia)",
-        "missing": "Search results mix document types: teczki sprawy (`/s/...`), komunikat/prasowe pages (`/wiadomosci/...`) and news, alongside real judgments (`/wyroki/art/...`). A query on a signature returns the case file before the ruling.",
-        "fallback": "Filter in code by `href` path - keep results whose href contains `/wyroki/art/` or `/sprawy-w-trybunale/art/` - then call `get_judgment_text`.",
+        "missing": "Search results mix document types: teczki sprawy (`/s/...`), komunikat/prasowe pages (`/wiadomosci/...`) and news, alongside real judgments (`/wyroki/art/...`). For a recent signature the result set carries ONLY the case file (`/s/<slug>`) and no judgment link, so there is no mechanical search->full-text path; this holds for older rulings (`K 63/07`) where both links appear and the case page itself links the ruling.",
+        "fallback": "Filter by `href`: keep `/wyroki/art/` or `/sprawy-w-trybunale/art/`, then `get_judgment_text`. When only `/s/<slug>` is present, open the case page in a browser - the ruling may not yet be published as a `/wyroki/art/` node.",
     },
     {
         "id": "TK-006",
